@@ -10,16 +10,36 @@ client.connect(portAddress, hostAddress, function(){
   console.log('connected to: '+ hostAddress + ':' + portAddress);
 
   //write a message to the server that confirms connection
-  client.write('It was a success!');
+  client.write('It was a success!\n');
+});
+
+//set the encoding to utf8
+process.stdin.setEncoding('utf8');
+
+//creating an input stream on the client that will communicate with server
+process.stdin.on('readable', function() {
+
+  //read the input data from the client?
+  var chunk = process.stdin.read();
+  if(chunk !== null) {
+
+    //write the input data on the server
+    client.write(chunk);
+  }
+});
+
+//once connection has ended write end
+process.stdin.on('end', function() {
+  client.write('end');
 });
 
 //adding a data event handler to the client socket
-client.on('data', function(data) {
-  console.log('DATA:' + data);
+// client.on('data', function(data) {
+//   console.log('DATA:' + data);
 
   //closes the client socket completely
-  client.destroy();
-});
+  // client.destroy();
+// });
 
 //adding a close event handler to the client socket
 client.on('close', function() {

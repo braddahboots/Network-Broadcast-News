@@ -2,17 +2,20 @@ var net = require('net');
 var hostAddress = '0.0.0.0';
 var portAddress = 6969;
 
-//instantiat a net server
-var server = net.createServer(function(c) {
-  console.log('client connected');
-  c.on('end', function() {
-    console.log('client disconnected');
+//create a new server and connect it to a client
+var server = net.createServer(function(socket) {
+
+  //input data from client and write out in command line
+  socket.on('data', function(data) {
+    process.stdout.write(data);
   });
-  c.write('testing connection');
-  c.pipe(c);
+
+  //confirming the connection between server and socket
+  socket.write('testing connection');
+  socket.pipe(socket);
 });
 
 //listen to port address
 server.listen({ host: hostAddress, port: portAddress,}, function() {
-  console.log('server bound to '+portAddress);
+  console.log('server listening on '+hostAddress + ':' + portAddress);
 });
