@@ -8,7 +8,6 @@ var client = new net.Socket();
 //connect the socket to the host address and port we've designated
 client.connect(portAddress, hostAddress, function(){
   console.log('connected to: '+ hostAddress + ':' + portAddress);
-
   //write a message to the server that confirms connection
   client.write('It was a success!\n');
 });
