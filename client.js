@@ -9,7 +9,7 @@ var client = new net.Socket();
 client.connect(portAddress, hostAddress, function(){
   console.log('connected to: '+ hostAddress + ':' + portAddress);
   //write a message to the server that confirms connection
-  client.write('It was a success!\n');
+  client.write('Connected \n');
 });
 
 //set the encoding to utf8
@@ -23,7 +23,7 @@ process.stdin.on('readable', function() {
   if(chunk !== null) {
 
     //write the input data on the server
-    client.write(chunk);
+    client.write(chunk.toString());
   }
 });
 
@@ -33,12 +33,12 @@ process.stdin.on('end', function() {
 });
 
 //adding a data event handler to the client socket
-// client.on('data', function(data) {
-//   console.log('DATA:' + data);
+client.on('data', function(data) {
+  console.log(data.toString());
 
   //closes the client socket completely
   // client.destroy();
-// });
+});
 
 //adding a close event handler to the client socket
 client.on('close', function() {
