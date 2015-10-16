@@ -19,11 +19,13 @@ var server = net.createServer(function(socket) {
   //function that interates of the array and checks to see if message posted is from socket
   //if not from sender post to all other sockets
   function chatRoom(message, sender) {
-    // console.log('chatROOOOOOOOM');
+    // console.log(sender);
     socketManager.forEach(function(c) {
-      if(c === sender) {
+      if(c.id === sender.id) {
+      console.log('user', c.id, sender.id);
         return;
       }
+      console.log('out');
       c.write(message);
     });
     process.stdout.write(message);
