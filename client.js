@@ -8,18 +8,18 @@ var client = new net.Socket();
 //connect the socket to the host address and port we've designated
 client.connect(portAddress, hostAddress, function(){
   console.log('connected to: '+ hostAddress + ':' + portAddress);
+
+  process.stdout.write('Input Username:');
   //write a message to the server that confirms connection
-  client.write('Connected \n');
+  // client.write('Connected \n');
 });
 
 //set the encoding to utf8
 process.stdin.setEncoding('utf8');
 
 //creating an input stream on the client that will communicate with server
-process.stdin.on('readable', function() {
+process.stdin.on('data', function(chunk) {
 
-  //read the input data from the client?
-  var chunk = process.stdin.read();
   if(chunk !== null) {
 
     //write the input data on the server
@@ -34,10 +34,7 @@ process.stdin.on('end', function() {
 
 //adding a data event handler to the client socket
 client.on('data', function(data) {
-  console.log(data.toString());
-
-  //closes the client socket completely
-  // client.destroy();
+  console.log(data.toString().trim());
 });
 
 //adding a close event handler to the client socket
