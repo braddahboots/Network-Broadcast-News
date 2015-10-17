@@ -6,23 +6,44 @@ var socketManager = [];
 //create a new server and connect it to a client
 var server = net.createServer(function(socket) {
   socket.id = null;
-  //asign unique id to each client socket
+  socket.admin = '[ADMIN]';
 
+  //store all new instances of sockets to an array
   socketManager.push(socket);
 
-  //input data from client and write out in command line
+  //input data from clients
   socket.on('data', function(data) {
-    var clientMessage = data.toString().trim();
+    var adminId = data.toString().trim();
 
+    //transform data into a string
+    var clientId = data.toString().trim();
+
+    //============Assign User Name================
     if(socket.id === null) {
-      socket.id = clientMessage;
+      socket.id = clientId;
+
+    } else if(socket.id === '[ADMIN]') {
+      adminMessage(socket.id + ': ' + data, socket);
+
     } else {
-    // console.log(socketManager.length);
+
+    //===========Send message to all clients======
     chatRoom(socket.id + ': ' + data, socket);
     }
   });
 
-  //function that interates of the array and checks to see if message posted is from socket
+  //functions that interate of the array and checks to see if message posted is from socket
+
+  //if from ADMIN then call this function
+  function adminMessage(message, sender) {
+    socketManager.forEach(function(c) {
+      if(c.id === '[ADMIN]') {
+        c.write(message);
+      }
+    });
+    process.stdout.write(message);
+  }
+
   //if not from sender post to all other sockets
   function chatRoom(message, sender) {
     socketManager.forEach(function(c) {
@@ -35,8 +56,6 @@ var server = net.createServer(function(socket) {
     process.stdout.write(message);
   }
 
-  //confirming the connection between server and socket
-  // socket.write('testing connection\n');
 });
 
 //listen to port address

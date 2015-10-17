@@ -10,6 +10,7 @@ client.connect(portAddress, hostAddress, function(){
   console.log('connected to: '+ hostAddress + ':' + portAddress);
 
   process.stdout.write('Input Username:');
+
   //write a message to the server that confirms connection
   // client.write('Connected \n');
 });
@@ -21,9 +22,9 @@ process.stdin.setEncoding('utf8');
 process.stdin.on('data', function(chunk) {
 
   if(chunk !== null) {
-
     //write the input data on the server
     client.write(chunk.toString());
+    // process.stdout.write('\n> ');
   }
 });
 
@@ -35,6 +36,7 @@ process.stdin.on('end', function() {
 //adding a data event handler to the client socket
 client.on('data', function(data) {
   console.log(data.toString().trim());
+  // process.stdout.write('\n> ');
 });
 
 //adding a close event handler to the client socket
