@@ -2,11 +2,11 @@ var net = require('net');
 var hostAddress = '0.0.0.0';
 var portAddress = 6969;
 var socketManager = [];
+var socketAdmin = false;
 
 //create a new server and connect it to a client
 var server = net.createServer(function(socket) {
   socket.id = null;
-  socket.admin = '[ADMIN]';
 
   //store all new instances of sockets to an array
   socketManager.push(socket);
@@ -20,17 +20,17 @@ var server = net.createServer(function(socket) {
 
     //============Assign User Name================
     if(socket.id === null) {
-      if(clientId === '[ADMIN]') {
+      if(clientId === '[ADMIN]' && socketAdmin === false) {
         socket.id = clientId;
-      } else if {
-      socket.id = clientId;
+        socketAdmin = true;
+      } else if (socketAdmin === false || clientId !== '[ADMIN]') {
+        socket.id = clientId;
+      } else {
+        userError(socket);
+      }
 
-    } else if(socket.id === '[ADMIN]') {
-      userError(socket);
-    }
-
-    else if (socket.id === '[ADMIN]') {
-      adminMessage(socket.id + ': ' + data, socket);
+    } else if (socket.id === '[ADMIN]') {
+      chatRoom(socket.id + ': ' + data, socket);
 
     } else {
     //===========Send message to all clients======
@@ -41,19 +41,19 @@ var server = net.createServer(function(socket) {
   //functions that interate of the array and checks to see if message posted is from socket
 
   //if from ADMIN then call this function
-  function adminMessage(message, sender) {
-    socketManager.forEach(function(c) {
-      if(c.id !== '[ADMIN]') {
-        c.write(message);
-      }
-    });
-    process.stdout.write(message);
-  }
+  // function adminMessage(message, sender) {
+  //   socketManager.forEach(function(c) {
+  //     if(c.id !== '[ADMIN]') {
+  //       c.write(message);
+  //     }
+  //   });
+  //   process.stdout.write(message);
+  // }
 
   //if not from sender post to all other sockets
-  function chatRoom(message, sender) {
+  function chatRoom(message, socket) {
     socketManager.forEach(function(c) {
-      if(c.id === sender.id) {
+      if(c.id === socket.id) {
         return;
       }
       // console.log('out');
@@ -63,9 +63,10 @@ var server = net.createServer(function(socket) {
   }
 
   //throw error if user is trying to log into admin
-  function userError(sender) {
-    if(sender) {
-      sender.write('Unable to access ADMIN');
+  function userError(socket) {
+    if(socket) {
+      socket.id = null;
+      socket.write('Unable to access ADMIN');
     }
   }
 
