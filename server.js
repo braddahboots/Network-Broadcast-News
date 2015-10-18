@@ -38,18 +38,6 @@ var server = net.createServer(function(socket) {
     }
   });
 
-  //functions that interate of the array and checks to see if message posted is from socket
-
-  //if from ADMIN then call this function
-  // function adminMessage(message, sender) {
-  //   socketManager.forEach(function(c) {
-  //     if(c.id !== '[ADMIN]') {
-  //       c.write(message);
-  //     }
-  //   });
-  //   process.stdout.write(message);
-  // }
-
   //if not from sender post to all other sockets
   function chatRoom(message, socket) {
     socketManager.forEach(function(c) {
