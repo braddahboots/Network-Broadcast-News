@@ -20,13 +20,19 @@ var server = net.createServer(function(socket) {
 
     //============Assign User Name================
     if(socket.id === null) {
+      if(clientId === '[ADMIN]') {
+        socket.id = clientId;
+      } else if {
       socket.id = clientId;
 
     } else if(socket.id === '[ADMIN]') {
+      userError(socket);
+    }
+
+    else if (socket.id === '[ADMIN]') {
       adminMessage(socket.id + ': ' + data, socket);
 
     } else {
-
     //===========Send message to all clients======
     chatRoom(socket.id + ': ' + data, socket);
     }
@@ -37,7 +43,7 @@ var server = net.createServer(function(socket) {
   //if from ADMIN then call this function
   function adminMessage(message, sender) {
     socketManager.forEach(function(c) {
-      if(c.id === '[ADMIN]') {
+      if(c.id !== '[ADMIN]') {
         c.write(message);
       }
     });
@@ -54,6 +60,13 @@ var server = net.createServer(function(socket) {
       c.write(message);
     });
     process.stdout.write(message);
+  }
+
+  //throw error if user is trying to log into admin
+  function userError(sender) {
+    if(sender) {
+      sender.write('Unable to access ADMIN');
+    }
   }
 
 });
